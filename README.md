@@ -49,3 +49,8 @@
     We also like to show how well we're testing, so there's a module called 
     [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
 
+6. Naming Convention 
+   
+   Follow the [pep8 naming convention](https://www.python.org/dev/peps/pep-0008/) for python code
+
+   Follow [google JSON guide](https://google.github.io/styleguide/jsoncstyleguide.xml?showone=Property_Name_Format#Property_Name_Format) For JSON (camelCase for properties)
