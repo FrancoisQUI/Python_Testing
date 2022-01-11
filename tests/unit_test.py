@@ -56,7 +56,7 @@ class TestShowSummary(TestClient):
         res = test_client.post("/showSummary", data={'email': 'bad@email.com'})
         assert res.status_code == 301
 
-    def test_no_email_should_have_response_code_401(self, test_client):
+    def test_no_email_should_have_response_code_301(self, test_client):
         res = test_client.post("/showSummary", data={'email': ''})
         assert res.status_code == 301
 
