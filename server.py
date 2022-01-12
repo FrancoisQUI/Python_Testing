@@ -7,6 +7,7 @@ from flask import Flask, render_template, request\
 
 
 TODAY = datetime.now()
+MAX_PLACE_PER_CLUB = 12
 
 
 def load_clubs():
@@ -55,10 +56,28 @@ def book(competition,club):
     found_club = [c for c in clubs if c['name'] == club][0]
     found_competition = [c for c in competitions if c['name'] == competition][0]
     if found_club and not found_competition["over"]:
-        return render_template('booking.html', club=found_club, competition=found_competition)
+        # define the max places can be purchased
+        if found_club["points"] > found_competition["placeValue"]*MAX_PLACE_PER_CLUB:
+            # test if club can take the allowed max places
+            # if it can : max place is the minor between competition's number of place
+            # and allowed max place per clun
+            if found_competition["numberOfPlaces"] > MAX_PLACE_PER_CLUB:
+                max_places = MAX_PLACE_PER_CLUB
+            else:
+                max_places = found_competition["numberOfPlaces"]
+        else:
+            # if not :  max place is the maximum place than the club
+            # can purchase with the amount of points
+            max_places = found_club["points"]/found_competition["placeValue"]
+        return render_template('booking.html',
+                               club=found_club,
+                               competition=found_competition,
+                               max_places=max_places)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions), 404
+        return render_template('welcome.html',
+                               club=club,
+                               competitions=competitions), 404
 
 
 @app.route('/purchasePlaces', methods=['POST'])
