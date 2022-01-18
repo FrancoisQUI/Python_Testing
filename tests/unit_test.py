@@ -14,25 +14,29 @@ class TestClient:
             {
                 "name": "Spring Festival",
                 "date": "2020-03-27 10:00:00",
-                "numberOfPlaces": "25",
+                "numberOfPlaces": 25,
+                "placeValue": 1,
                 "over": True
             },
             {
                 "name": "Fall Classic",
                 "date": "2020-10-22 13:30:00",
-                "numberOfPlaces": "13",
+                "numberOfPlaces": 13,
+                "placeValue": 1,
                 "over": True
             },
             {
                 "name": "Future Competition",
                 "date": "3000-10-22 13:30:00",
-                "numberOfPlaces": "18",
+                "numberOfPlaces": 18,
+                "placeValue": 1,
                 "over": False
             },
             {
                 "name": "Over Competition",
                 "date": "1999-10-22 13:30:00",
-                "numberOfPlaces": "18",
+                "numberOfPlaces": 18,
+                "placeValue": 1,
                 "over": True
             }
         ]
@@ -40,12 +44,12 @@ class TestClient:
             {
                 "name": "Gooduser",
                 "email": "good@email.com",
-                "points": "13"
+                "points": 20
             },
             {
                 "name": "anotheruser",
                 "email": "another@email.com",
-                "points": "2"
+                "points": 2
             }
         ]
 
@@ -98,8 +102,38 @@ class TestBook(TestClient):
         response = test_client.get(f"/book/{competition_name}/{club_name}")
         assert response.status_code == 200
 
-    def test_over_competition_should_have_response_code_404(self, test_client):
+    def test_over_competition_should_have_response_code_403(self, test_client):
         club_name = "Gooduser"
         competition_name = "Over Competition"
         response = test_client.get(f"/book/{competition_name}/{club_name}")
-        assert response.status_code == 404
+        assert response.status_code == 403
+
+
+class TestPurchasePlaces(TestClient):
+    def test_user_have_enough_point_to_purchase_places_should_have_response_code_200(self, test_client):
+        club_name = "Gooduser"
+        competition_name = "Future Competition"
+        required_places = 3
+        response = test_client.post("/purchasePlaces", data={'club': club_name,
+                                                             'competition': competition_name,
+                                                             'places': required_places})
+        assert response.status_code == 200
+
+    def test_user_have_not_enough_point_to_purchase_places_should_have_response_code_403(self, test_client):
+        club_name = "Gooduser"
+        competition_name = "Future Competition"
+        required_places = 99
+        response = test_client.post("/purchasePlaces", data={'club': club_name,
+                                                             'competition': competition_name,
+                                                             'places': required_places})
+        assert response.status_code == 403
+
+    def test_user_claim_more_place_than_competition_available_places_sould_have_response_code_403(self, test_client):
+        club_name = "Gooduser"
+        competition_name = "Future Competition"
+        required_places = 19
+        response = test_client.post("/purchasePlaces", data={'club': club_name,
+                                                             'competition': competition_name,
+                                                             'places': required_places})
+        assert response.status_code == 403
+

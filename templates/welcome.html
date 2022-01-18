@@ -18,12 +18,10 @@
     Points available: {{club['points']}}
     <h3>Competitions:</h3>
     <ul>
-        {{  competitions|pprint }}
         {% for comp in competitions%}
-
             <li id="{{ comp['name'] | replace(" ", "") }}">
                 <h4>{{ comp['name'] }}</h4><br/>
-                Date: {{comp['date']}}</br>
+                Date: {{comp['date']}}<br/>
                 Number of Places: {{comp['numberOfPlaces']}}
                 {%if comp['numberOfPlaces']|int >0 and not comp['over']%}
                     <a class="book_link" href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
