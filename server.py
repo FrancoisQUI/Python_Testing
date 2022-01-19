@@ -60,10 +60,10 @@ def book(competition, club):
             # test if club can take the allowed max places
             # if it can : max place is the minor between competition's number of place
             # and allowed max place per clun
-            # if found_competition["numberOfPlaces"] > MAX_PLACE_PER_CLUB:
-            #     max_places = MAX_PLACE_PER_CLUB
-            # else:
-            max_places = found_competition["numberOfPlaces"]
+            if found_competition["numberOfPlaces"] > MAX_PLACE_PER_CLUB:
+                max_places = MAX_PLACE_PER_CLUB
+            else:
+                max_places = found_competition["numberOfPlaces"]
         else:
             # if not :  max place is the maximum place than the club
             # can purchase with the amount of points
@@ -97,7 +97,7 @@ def purchase_places():
         flash("Not enough place for this competition")
         return render_template('welcome.html', club=club, competitions=competitions), 403
     # elif places_required > MAX_PLACE_PER_CLUB:
-    #     flash(f"Only {MAX_PLACE_PER_CLUB}")
+    #     flash(f"Only {MAX_PLACE_PER_CLUB} places per club allowed")
 
     return render_template('welcome.html', club=club, competitions=competitions), 200
 

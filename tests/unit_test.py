@@ -1,8 +1,11 @@
 from pprint import pprint
 
+import flask
 from bs4 import BeautifulSoup as bs
 
 import pytest
+from flask.json import dump
+
 import server
 
 
@@ -28,7 +31,14 @@ class TestClient:
             {
                 "name": "Future Competition",
                 "date": "3000-10-22 13:30:00",
-                "numberOfPlaces": 18,
+                "numberOfPlaces": 3,
+                "placeValue": 1,
+                "over": False
+            },
+            {
+                "name": "Future Competition 2",
+                "date": "3000-10-22 13:30:00",
+                "numberOfPlaces": 20,
                 "placeValue": 1,
                 "over": False
             },
@@ -44,7 +54,7 @@ class TestClient:
             {
                 "name": "Gooduser",
                 "email": "good@email.com",
-                "points": 20
+                "points": 11
             },
             {
                 "name": "anotheruser",
@@ -53,8 +63,14 @@ class TestClient:
             }
         ]
 
+        server.MAX_PLACE_PER_CLUB = 12
+
         with server.app.test_client() as client:
             yield client
+
+
+def flash_message_content_is(message):
+    return str(flask.get_flashed_messages()).find(message) > 0
 
 
 class TestIndex(TestClient):
@@ -80,19 +96,19 @@ class TestShowSummary(TestClient):
         response = test_client.post("/showSummary", data={'email': ''})
         assert response.status_code == 301
 
-    def test_not_over_competition_should_show_book_link(self, test_client):
+    def test_over_competition_should_show_book_link(self, test_client):
         competition_selector = "OverCompetition"  # CSS selector is competition name without spaces
         response = test_client.post("/showSummary", data={'email': 'good@email.com'})
         response_content = bs(response.data, 'html.parser')
         assert str(response_content.select(f"#{competition_selector}")). \
-                   find("<a class=\"book_link\"") < 0
+                   find("<a class=\"book_link\"") <= 0
 
-    def test_over_competition_should_not_show_book_link(self, test_client):
+    def test_not_over_competition_should_not_show_book_link(self, test_client):
         competition_selector = "FutureCompetition"  # CSS selector is competition name without spaces
         response = test_client.post("/showSummary", data={'email': 'good@email.com'})
         response_content = bs(response.data, 'html.parser')
         assert str(response_content.select(f"#{competition_selector}")). \
-            find("<a class=\"book_link\"")
+                   find("<a class=\"book_link\"") > 0
 
 
 class TestBook(TestClient):
@@ -118,6 +134,7 @@ class TestPurchasePlaces(TestClient):
                                                              'competition': competition_name,
                                                              'places': required_places})
         assert response.status_code == 200
+        assert flash_message_content_is('Great-booking complete!')
 
     def test_user_have_not_enough_point_to_purchase_places_should_have_response_code_403(self, test_client):
         club_name = "Gooduser"
@@ -127,13 +144,24 @@ class TestPurchasePlaces(TestClient):
                                                              'competition': competition_name,
                                                              'places': required_places})
         assert response.status_code == 403
+        assert flash_message_content_is('Not enough points')
 
-    def test_user_claim_more_place_than_competition_available_places_sould_have_response_code_403(self, test_client):
+    def test_user_claim_more_place_than_competition_available_places_should_have_response_code_403(self, test_client):
         club_name = "Gooduser"
         competition_name = "Future Competition"
-        required_places = 19
+        required_places = 11
         response = test_client.post("/purchasePlaces", data={'club': club_name,
                                                              'competition': competition_name,
                                                              'places': required_places})
         assert response.status_code == 403
+        assert flash_message_content_is("Not enough place for this competition")
 
+    def test_user_claim_more_than_authorized_place_should_have_response_code_403(self, test_client):
+        club_name = "Gooduser"
+        competition_name = "Future Competition 2"
+        required_places = 13
+        response = test_client.post("/purchasePlaces", data={'club': club_name,
+                                                             'competition': competition_name,
+                                                             'places': required_places})
+        assert response.status_code == 403
+        assert flash_message_content_is(f"Only {server.MAX_PLACE_PER_CLUB} places per club allowed")
