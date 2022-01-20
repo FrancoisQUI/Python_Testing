@@ -164,3 +164,7 @@ class TestPurchasePlaces(TestClient):
         assert flash_message_content_is(f"Only {server.MAX_PLACE_PER_CLUB} places per club allowed")
 
 
+class TestDisplayBoard(TestClient):
+    def test_display_board_should_have_response_200(self, test_client):
+        response = test_client.get("/board")
+        assert response.status_code == 200
