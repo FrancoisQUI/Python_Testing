@@ -1,3 +1,4 @@
+import csv
 import json
 from datetime import datetime
 from pprint import pprint
@@ -88,6 +89,7 @@ def purchase_places():
             places_required <= competition["numberOfPlaces"] and \
             places_required <= MAX_PLACE_PER_CLUB:
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - places_required
+        club['points'] -= places_required * competition["placeValue"]
         flash('Great-booking complete!')
     elif places_required > club["points"] * competition["placeValue"]:
         flash("Not enough points")

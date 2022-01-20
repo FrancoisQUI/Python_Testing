@@ -162,3 +162,5 @@ class TestPurchasePlaces(TestClient):
                                                              'places': required_places})
         assert response.status_code == 403
         assert flash_message_content_is(f"Only {server.MAX_PLACE_PER_CLUB} places per club allowed")
+
+
