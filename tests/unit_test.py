@@ -1,10 +1,7 @@
-from pprint import pprint
-
 import flask
 from bs4 import BeautifulSoup as bs
 
 import pytest
-from flask.json import dump
 
 import server
 
@@ -54,7 +51,7 @@ class TestClient:
             {
                 "name": "Gooduser",
                 "email": "good@email.com",
-                "points": 11
+                "points": 13
             },
             {
                 "name": "anotheruser",
