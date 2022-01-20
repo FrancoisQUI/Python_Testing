@@ -1,7 +1,5 @@
-import csv
 import json
 from datetime import datetime
-from pprint import pprint
 
 from flask import Flask, render_template, request \
     , redirect, flash, url_for
@@ -104,7 +102,9 @@ def purchase_places():
     return render_template('welcome.html', club=club, competitions=competitions), 200
 
 
-# TODO: Add route for points display
+@app.route('/board')
+def show_points_board():
+    return render_template('board.html', clubs=clubs)
 
 
 @app.route('/logout')
