@@ -109,4 +109,4 @@ def show_points_board():
 
 @app.route('/logout')
 def logout():
-    return redirect(url_for('index'))
+    return redirect(url_for('index')), 200

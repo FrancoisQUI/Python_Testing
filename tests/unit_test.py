@@ -168,3 +168,9 @@ class TestDisplayBoard(TestClient):
     def test_display_board_should_have_response_200(self, test_client):
         response = test_client.get("/board")
         assert response.status_code == 200
+
+
+class TestLogout(TestClient):
+    def test_logout_should_have_code_200(self, test_client):
+        response = test_client.get("/logout")
+        assert response.status_code == 200
