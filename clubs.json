@@ -14,6 +14,16 @@
             "name": "She Lifts",
             "email": "kate@shelifts.co.uk",
             "points": 12
+        },
+        {
+            "name": "Test",
+            "email": "test@test.fr",
+            "points": 12
+        },
+        {
+            "name": "Test2",
+            "email": "test@test.fr",
+            "points": 2
         }
     ]
 }

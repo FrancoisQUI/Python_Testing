@@ -19,7 +19,13 @@
             "placeValue": 3
         },
         {
-            "name": "Test test",
+            "name": "Test test 2",
+            "date": "2025-10-22 13:30:00",
+            "numberOfPlaces": 25,
+            "placeValue": 3
+        },
+        {
+            "name": "Test_Competition" ,
             "date": "2025-10-22 13:30:00",
             "numberOfPlaces": 25,
             "placeValue": 3

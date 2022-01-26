@@ -45,7 +45,7 @@ def show_summary():
         club = [club for club in clubs if club['email'] == request.form['email']][0]
     except IndexError:
         flash("Sorry, that email wasn't found.")
-        return redirect(url_for('index'), 401), 301
+        return redirect(url_for('index')), 301
     return render_template('welcome.html', club=club, competitions=competitions)
 
 
