@@ -25,7 +25,7 @@ class TestIntegration(TestClient):
         can_login = test_client.get("/", data={'email': 'john@simplylift.co'})
         can_logout = test_client.get("/logout")
 
-        login_page_content = bs(login_page.data)
+        login_page_content = bs(login_page.data, features="html.parser")
 
         assert login_page.status_code == 200
         assert u"<title>GUDLFT Registration</title>" in \
@@ -71,8 +71,6 @@ class TestIntegration(TestClient):
             'club': club['name'],
             'competition': competition['name']
         }, follow_redirects=True)
-
-        pprint(booking.__dict__)
 
         assert book_screen.status_code == 200
         assert booking.status_code == 403
